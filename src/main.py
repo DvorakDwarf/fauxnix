@@ -1,5 +1,6 @@
 import os
 from datetime import date
+import shutil
 
 GENERATION_DIR = "generations/"
 
@@ -16,5 +17,7 @@ for _, dirnames, _ in os.walk(GENERATION_DIR):
 
 # print(length)
 
-name = GENERATION_DIR + str(date.today()) + " G" + str(length)
+name = os.path.join(GENERATION_DIR, str(date.today()) + " G" + str(length))
 os.mkdir(name)
+pkglist_dir = os.path.join(name, "pkglist.txt")
+shutil.copyfile("pkglist.txt", pkglist_dir)
