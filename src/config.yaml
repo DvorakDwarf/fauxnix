@@ -1,0 +1,7 @@
+#What config files will be copied each generation
+tracked_files: 
+  - /home/titleless/.config/hyprland/hyprpaper
+
+#Only the 1000 most recent generations will be saved
+history_length: 1000
+
