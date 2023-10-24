@@ -1,4 +1,6 @@
 src/pkglist.txt
+.vscode
+src/generations/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
