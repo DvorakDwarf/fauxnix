@@ -8,5 +8,5 @@ history_length: 1000
 
 #The command to be run when reverting system
 #Later include commented versions of other package managers
-update_command: "sudo pacman -S - < "
+update_command: "sudo pacman --needed -S - < "
 

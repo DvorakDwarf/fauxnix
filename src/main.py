@@ -19,7 +19,7 @@ def create_dir() -> str:
         #Only care about first, next wasn't working, idk
         break
 
-    new_gen_dir = os.path.join(GENERATION_DIR, str(date.today()) + " G" + str(length))
+    new_gen_dir = os.path.join(GENERATION_DIR, str(date.today()) + "_G" + str(length))
     os.mkdir(new_gen_dir)
 
     return new_gen_dir
@@ -44,6 +44,31 @@ def copy_configs(new_gen_dir):
         with open(meta_path, 'w') as file:
             json.dump(meta, file, indent=4)
 
+def revert():
+    dirs = os.listdir(GENERATION_DIR)
+    revert_dir = ""
+    for dir in dirs:
+        split = dir.split("G")
+        #Everything after G
+        if int(split[1]) == args.revert:
+            revert_dir = dir
+
+    revert_dir = os.path.join(GENERATION_DIR, revert_dir)
+
+    with open(CONFIG_PATH, 'r') as file:
+        config = yaml.safe_load(file)
+
+    revert_command = config["update_command"] + os.path.join(revert_dir, "pkglist.txt")
+    subprocess.run(revert_command, shell=True)
+
+    with open(os.path.join(revert_dir, "meta.json")) as file:
+        meta: dict = json.load(file)
+
+    for tracked_file in meta["og_paths"]:
+        old_path = meta["og_paths"][tracked_file]
+        tracked_file = os.path.join(revert_dir, tracked_file)
+        shutil.copyfile(tracked_file, old_path)
+
 parser = argparse.ArgumentParser(
                 prog='fauxnix',
                 description='Declarative configuration for the people, not sysadmins '
@@ -65,18 +90,6 @@ if args.sync == True:
 
 #Revert must come with an argument
 elif args.revert != "":
-    dirs = os.listdir(GENERATION_DIR)
-    revert_dir = ""
-    for dir in dirs:
-        split = dir.split("G")
-        #Everything after G
-        if int(split[1]) == args.revert:
-            revert_dir = dir
+    revert()
 
-    revert_dir = os.path.join(GENERATION_DIR, revert_dir)
-
-    with open(CONFIG_PATH, 'r') as file:
-        config = yaml.safe_load(file)
-        revert_command = config["update_command"] + revert_dir
-        print(revert_command)
-        # subprocess.Popen(revert_command)
+        
