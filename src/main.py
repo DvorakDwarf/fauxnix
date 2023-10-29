@@ -43,7 +43,7 @@ def copy_configs(new_gen_dir):
 
     now = datetime.now()
     meta: dict = {"og_paths": {}}
-    meta["date"] = now.strftime("%d/%m/%Y, %H:%M:%S")
+    meta["date"] = now.strftime("%d/%m/%Y %H:%M:%S")
 
     for file_path in config['tracked_files']:
         filename = file_path.split('/')[-1]
@@ -87,6 +87,22 @@ def revert():
     subprocess.run(f"sudo pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
     subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
 
+def list():
+    dirs = os.listdir(GENERATION_DIR)
+    generations = []
+    for dir in dirs:
+        split = dir.split("G")
+        generation_num = split[-1]
+
+        with open(os.path.join(GENERATION_DIR, dir, "meta.json")) as file:
+            meta: dict = json.load(file)
+
+        generations.append({"generation": generation_num, "date": meta["date"]})
+
+    print("Available generations: ")
+    for gen in generations:
+        print(f"G{gen['generation']} - {gen['date']}")
+
 parser = argparse.ArgumentParser(
                 prog='fauxnix',
                 description='Declarative configuration for the people, not sysadmins '
@@ -95,10 +111,12 @@ parser = argparse.ArgumentParser(
 mxgroup = parser.add_mutually_exclusive_group()
 mxgroup.add_argument('-s', '--sync', action='store_true',
                     help="create new generation") 
-mxgroup.add_argument('-r', '--revert', type=int,
-                    help="revert to previous generation. Takes generation #") 
 mxgroup.add_argument('-i', '--id', action='store_true',
                     help="place the user uid and gid in the config") 
+mxgroup.add_argument('-l', '--list', action='store_true',
+                    help="list existing generations") 
+mxgroup.add_argument('-r', '--revert', type=int,
+                    help="revert to previous generation. Takes generation #") 
 
 args = parser.parse_args()
 
@@ -106,6 +124,10 @@ if args.sync == True:
     new_gen_dir = create_dir()
     copy_pkglist(new_gen_dir)
     copy_configs(new_gen_dir)
+
+#Revert must come with an argument
+elif args.revert != None:
+    revert()
 
 elif args.id == True:
     with open(CONFIG_PATH, 'r') as file:
@@ -117,8 +139,10 @@ elif args.id == True:
     with open(CONFIG_PATH, 'w') as file:
         yaml.dump(config, file)
 
-#Revert must come with an argument
-elif args.revert != "":
-    revert()
+elif args.list == True:
+    list()
+
+else:
+    parser.print_help()
 
         
