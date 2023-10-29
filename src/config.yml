@@ -1,12 +1,21 @@
 #What config files will be copied each generation
-tracked_files: 
-  - /home/titleless/.config/hypr/hyprland.conf
-  - /home/titleless/.config/hypr/hyprpaper.conf
+tracked_files:
+- /home/titleless/.config/hypr/hyprland.conf
+- /home/titleless/.config/hypr/hyprpaper.conf
 
 #Only the 1000 most recent generations will be saved
 history_length: 1000
 
 #The command to be run when reverting system
 #Later include commented versions of other package managers
-update_command: "sudo pacman --needed -S - < "
+# update_command: "sudo pacman --needed -S - < "
 
+#For aur support. Replace with yay if needed
+update_command: 'paru --needed -S - < '
+
+#TODO
+#Currently assumes that pacman is available for deleting obsolete pkgs
+
+#Required for when the script is run as root by pacman hook
+uid: 1000
+gid: 1000

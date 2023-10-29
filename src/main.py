@@ -1,7 +1,7 @@
 import os
-from datetime import date
+import ruamel.yaml
+from datetime import date, datetime
 import shutil
-import yaml
 import argparse
 import subprocess
 import json 
@@ -10,6 +10,7 @@ DIRNAME = os.path.dirname(__file__)
 GENERATION_DIR = os.path.join(DIRNAME, "generations/")
 CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
+yaml = ruamel.yaml.YAML()
 
 def create_dir() -> str:
     length = 0
@@ -31,8 +32,12 @@ def copy_pkglist(new_gen_dir: str):
 #TODO
 def copy_configs(new_gen_dir):
     with open(CONFIG_PATH, 'r') as file:
-        config: dict = yaml.safe_load(file)
+        #Unsafe ???
+        config: dict = yaml.load(file)
+        now = datetime.now()
         meta: dict = {"og_paths": {}}
+        meta["date"] = now.strftime("%d/%m/%Y, %H:%M:%S")
+
         for file_path in config['tracked_files']:
             filename = file_path.split('/')[-1]
             new_config_path = os.path.join(new_gen_dir, filename)
@@ -56,10 +61,7 @@ def revert():
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
 
     with open(CONFIG_PATH, 'r') as file:
-        config = yaml.safe_load(file)
-
-    revert_command = config["update_command"] + os.path.join(revert_dir, "pkglist.txt")
-    subprocess.run(revert_command, shell=True)
+        config = yaml.load(file)
 
     with open(os.path.join(revert_dir, "meta.json")) as file:
         meta: dict = json.load(file)
@@ -69,17 +71,27 @@ def revert():
         tracked_file = os.path.join(revert_dir, tracked_file)
         shutil.copyfile(tracked_file, old_path)
 
+    old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
+    revert_command = config["update_command"] + old_pkg_path
+    subprocess.run(revert_command, shell=True)
+
+    #Makes this unique to pacman, find more general workaround later
+    subprocess.run("pacman -D --asdeps $(pacman -Qqe)", shell=True)
+    subprocess.run(f"pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
+    subprocess.run("pacman -Qtdq | pacman -Rns -", shell=True)
+
 parser = argparse.ArgumentParser(
                 prog='fauxnix',
                 description='Declarative configuration for the people, not sysadmins '
                 )
 
 mxgroup = parser.add_mutually_exclusive_group()
-
 mxgroup.add_argument('-s', '--sync', action='store_true',
                     help="create new generation") 
 mxgroup.add_argument('-r', '--revert', type=int,
                     help="revert to previous generation. Takes generation #") 
+mxgroup.add_argument('-i', '--id', action='store_true',
+                    help="place the user uid and gid in the config") 
 
 args = parser.parse_args()
 
@@ -87,6 +99,16 @@ if args.sync == True:
     new_gen_dir = create_dir()
     copy_pkglist(new_gen_dir)
     copy_configs(new_gen_dir)
+
+elif args.id == True:
+    with open(CONFIG_PATH, 'r') as file:
+        config = yaml.load(file)
+
+    config["uid"] = os.getuid()
+    config["gid"] = os.getgid()
+
+    with open(CONFIG_PATH, 'w') as file:
+        yaml.dump(config, file)
 
 #Revert must come with an argument
 elif args.revert != "":
