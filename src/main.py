@@ -12,6 +12,12 @@ CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
 yaml = ruamel.yaml.YAML()
 
+with open(CONFIG_PATH, 'r') as file:
+    #Unsafe ???
+    config: dict = yaml.load(file)
+    os.setegid(config["gid"])
+    os.seteuid(config["uid"])
+
 def create_dir() -> str:
     length = 0
     for _, dirnames, _ in os.walk(GENERATION_DIR):
@@ -34,20 +40,21 @@ def copy_configs(new_gen_dir):
     with open(CONFIG_PATH, 'r') as file:
         #Unsafe ???
         config: dict = yaml.load(file)
-        now = datetime.now()
-        meta: dict = {"og_paths": {}}
-        meta["date"] = now.strftime("%d/%m/%Y, %H:%M:%S")
 
-        for file_path in config['tracked_files']:
-            filename = file_path.split('/')[-1]
-            new_config_path = os.path.join(new_gen_dir, filename)
-            shutil.copyfile(file_path, new_config_path)
+    now = datetime.now()
+    meta: dict = {"og_paths": {}}
+    meta["date"] = now.strftime("%d/%m/%Y, %H:%M:%S")
 
-            meta['og_paths'][filename] = file_path
+    for file_path in config['tracked_files']:
+        filename = file_path.split('/')[-1]
+        new_config_path = os.path.join(new_gen_dir, filename)
+        shutil.copyfile(file_path, new_config_path)
 
-        meta_path = os.path.join(DIRNAME, new_gen_dir, "meta.json")
-        with open(meta_path, 'w') as file:
-            json.dump(meta, file, indent=4)
+        meta['og_paths'][filename] = file_path
+
+    meta_path = os.path.join(DIRNAME, new_gen_dir, "meta.json")
+    with open(meta_path, 'w') as file:
+        json.dump(meta, file, indent=4)
 
 def revert():
     dirs = os.listdir(GENERATION_DIR)
@@ -76,9 +83,9 @@ def revert():
     subprocess.run(revert_command, shell=True)
 
     #Makes this unique to pacman, find more general workaround later
-    subprocess.run("pacman -D --asdeps $(pacman -Qqe)", shell=True)
-    subprocess.run(f"pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
-    subprocess.run("pacman -Qtdq | pacman -Rns -", shell=True)
+    subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
+    subprocess.run(f"sudo pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
+    subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
 
 parser = argparse.ArgumentParser(
                 prog='fauxnix',
