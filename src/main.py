@@ -73,11 +73,6 @@ def revert():
     with open(os.path.join(revert_dir, "meta.json")) as file:
         meta: dict = json.load(file)
 
-    for tracked_file in meta["og_paths"]:
-        old_path = meta["og_paths"][tracked_file]
-        tracked_file = os.path.join(revert_dir, tracked_file)
-        shutil.copyfile(tracked_file, old_path)
-
     old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
     revert_command = config["update_command"] + old_pkg_path
     subprocess.run(revert_command, shell=True)
@@ -86,6 +81,26 @@ def revert():
     subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
     subprocess.run(f"sudo pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
     subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
+
+    for tracked_file in meta["og_paths"]:
+        old_path = meta["og_paths"][tracked_file]
+        gen_file = os.path.join(revert_dir, tracked_file)
+        try:
+            shutil.copyfile(gen_file, old_path)
+        except FileNotFoundError:
+            print(f'The directory where the file "{tracked_file}" used to be isn\'t there anymore')
+            answer = input("Do you wish to create the directory ? (Y/n)").lower()
+            if answer == "" or answer == "y":
+                #Linux specific
+                target_dir = old_path.split("/")
+                target_dir.pop(-1)
+                target_dir = ''.join(target_dir)
+                os.makedirs(target_dir)
+                shutil.copyfile(gen_file, old_path)
+
+            else:
+                print("The file was not copied. Make sure this did not break anything")
+
 
 def list():
     dirs = os.listdir(GENERATION_DIR)

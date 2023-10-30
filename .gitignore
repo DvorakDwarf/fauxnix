@@ -2,6 +2,7 @@ src/pkglist.txt
 src/backup.yml
 .vscode
 src/generations/*
+src/test
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
