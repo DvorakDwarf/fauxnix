@@ -4,6 +4,8 @@ tracked_files:
 
 #Only the 1000 most recent generations will be saved
 history_length: 1000
+#Pick date format. Default is dd/mm/yyyy
+day_first: true
 
 #The command to be run when reverting system
 #Later include commented versions of other package managers
