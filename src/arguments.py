@@ -36,7 +36,16 @@ def copy_configs(new_gen_dir):
 
     now = datetime.now()
     meta: dict = {"og_paths": {}}
-    meta["date"] = now.strftime("%d/%m/%Y %H:%M:%S")
+    if config["day_first"] == True:
+        meta["date"] = now.strftime("%d/%m/%Y %H:%M:%S")
+        meta["day_first"] = True
+    elif config["day_first"] == False:
+        meta["date"] = now.strftime("%m/%d/%Y %H:%M:%S")
+        meta["day_first"] = False
+    else:
+        print("day_first variable in config is not a bool. Assuming true")
+        meta["date"] = now.strftime("%d/%m/%Y %H:%M:%S")
+        meta["day_first"] = True
 
     for file_path in config['tracked_files']:
         filename = file_path.split('/')[-1]
@@ -100,6 +109,9 @@ def revert(target_gen: int):
 
 
 def list():
+    with open(CONFIG_PATH, 'r') as file:
+        config = yaml.load(file)
+
     dirs = os.listdir(GENERATION_DIR)
     generations = []
 
@@ -113,6 +125,12 @@ def list():
 
         with open(os.path.join(GENERATION_DIR, dir, "meta.json")) as file:
             meta: dict = json.load(file)
+
+        if config["day_first"] != meta["day_first"]:
+            #Swap day and month around
+            new_date = meta["date"].split('/')
+            new_date[0], new_date[1] = new_date[1], new_date[0]
+            meta["date"] = '/'.join(new_date)
 
         generations.append({"generation": generation_num, "date": meta["date"]})
 
