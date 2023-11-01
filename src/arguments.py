@@ -102,6 +102,11 @@ def revert(target_gen: int):
 def list():
     dirs = os.listdir(GENERATION_DIR)
     generations = []
+
+    if len(dirs) == 0:
+        print("No exisiting generations, try syncing first!")
+        return
+
     for dir in dirs:
         split = dir.split("G")
         generation_num = split[-1]
