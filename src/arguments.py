@@ -11,21 +11,13 @@ CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
 yaml = ruamel.yaml.YAML()
 
-def create_dir() -> str: 
-    length = 0
-    for _, dirnames, _ in os.walk(GENERATION_DIR):
-        length = len(dirnames)
-   
-        #Only care about first, next wasn't working, idk
-        break
+def create_dir() -> str:
    
     dirs = os.listdir(GENERATION_DIR)
-    last_gen = sorted(dirs)[-1].split("_")[-1]
-    
-    new_gen = int(last_gen[-1])+1
+    gen_name = sorted(dirs)[-1].split("_")[-1]
+    new_gen_name =str(int(gen_name[-1]) + 1)
 
-    new_gen_name = f"{date.today()}_G{new_gen}"
-    new_gen_dir = os.path.join(GENERATION_DIR, new_gen_name)
+    new_gen_dir = os.path.join(GENERATION_DIR, str(date.today()) + "_G" + new_gen_name)
     os.mkdir(new_gen_dir)
 
     return new_gen_dir
