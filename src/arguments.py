@@ -11,15 +11,21 @@ CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
 yaml = ruamel.yaml.YAML()
 
-def create_dir() -> str:
+def create_dir() -> str: 
     length = 0
     for _, dirnames, _ in os.walk(GENERATION_DIR):
         length = len(dirnames)
-
+   
         #Only care about first, next wasn't working, idk
         break
+   
+    dirs = os.listdir(GENERATION_DIR)
+    last_gen = sorted(dirs)[-1].split("_")[-1]
+    
+    new_gen = int(last_gen[-1])+1
 
-    new_gen_dir = os.path.join(GENERATION_DIR, str(date.today()) + "_G" + str(length))
+    new_gen_name = f"{date.today()}_G{new_gen}"
+    new_gen_dir = os.path.join(GENERATION_DIR, new_gen_name)
     os.mkdir(new_gen_dir)
 
     return new_gen_dir
@@ -119,7 +125,7 @@ def list():
         print("No exisiting generations, try syncing first!")
         return
 
-    for dir in dirs:
+    for dir in sorted(dirs):
         split = dir.split("G")
         generation_num = split[-1]
 
@@ -133,7 +139,7 @@ def list():
             meta["date"] = '/'.join(new_date)
 
         generations.append({"generation": generation_num, "date": meta["date"]})
-
+    
     print("Available generations: ")
     for gen in generations:
         print(f"G{gen['generation']} - {gen['date']}")
