@@ -13,27 +13,27 @@ yaml = ruamel.yaml.YAML()
 
 def get_gen(dir: str) -> int:
     gen_section = dir.split("_")[0]
-    print(gen_section)
     gen_num = int(gen_section[1:])
 
-    print(gen_num)
     return gen_num
 
-def get_sorted_gen() -> list:
-    pass
+def get_sorted_gen(dirs: list) -> list:
+    return sorted(dirs, key=get_gen)
 
 def create_dir() -> str:
     with open(CONFIG_PATH, 'r') as file:
         #Unsafe ???
         config: dict = yaml.load(file)
 
+    #The gens are sorted by the number in ascending order. Important
     dirs = os.listdir(GENERATION_DIR)
+    dirs = get_sorted_gen(dirs)
 
     if len(dirs) == 0:
         new_gen_num = "0"
     else:
         #Take all gens, sort, find highest one, split along_, take 2nd character and following
-        gen_num = get_gen(sorted(dirs)[-1])
+        gen_num = get_gen(dirs[-1])
         new_gen_num = str(gen_num + 1)
     
     current_date = str(date.today())
@@ -41,7 +41,12 @@ def create_dir() -> str:
     os.mkdir(new_gen_dir)
 
     if len(dirs) > config["history_length"]:
-        print(sorted(dirs)[0])
+        gen_difference = len(dirs) - config["history_length"]
+        outdated_gens = dirs[0:gen_difference]
+        for gen_dir in outdated_gens:
+            gen_path = os.path.join(GENERATION_DIR, gen_dir)
+            print(f"Deleting outdated generation: {gen_dir}")
+            shutil.rmtree(gen_path)
 
     return new_gen_dir
 
@@ -140,9 +145,9 @@ def list():
         print("No exisiting generations, try syncing first!")
         return
 
-    for dir in sorted(dirs):
+    for dir in get_sorted_gen(dirs):
         #Always starts with Gx
-        generation_num = dir[1]
+        generation_num = get_gen(dir)
 
         with open(os.path.join(GENERATION_DIR, dir, "meta.json")) as file:
             meta: dict = json.load(file)

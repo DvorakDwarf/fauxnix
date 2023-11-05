@@ -3,7 +3,7 @@ tracked_files:
 - /home/titleless/.config/hypr/hyprpaper.conf
 
 #Only the 1000 most recent generations will be saved
-history_length: 1000
+history_length: 500
 #Pick date format. Default is dd/mm/yyyy
 day_first: true
 
