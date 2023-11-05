@@ -8,11 +8,10 @@ DIRNAME = os.path.dirname(__file__)
 CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
 yaml = ruamel.yaml.YAML()
 
-with open(CONFIG_PATH, 'r') as file:
-    #Unsafe ???
-    config: dict = yaml.load(file)
-    os.setegid(config["gid"])
-    os.seteuid(config["uid"])
+config = arguments.load_config()
+os.setegid(config["gid"])
+os.seteuid(config["uid"])
+print("The files!!!! is: " +str(config["tracked_files"]))
 
 parser = argparse.ArgumentParser(
                 prog='fauxnix',

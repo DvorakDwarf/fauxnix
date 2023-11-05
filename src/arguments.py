@@ -11,6 +11,17 @@ CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
 yaml = ruamel.yaml.YAML()
 
+#Why have references if you can't concat them ????
+#Change return type to correct thing later
+def load_config() -> dict:    
+    with open(CONFIG_PATH, 'r') as file:
+        #Unsafe ???
+        config: dict = yaml.load(file)
+        for idx in range(len(config["tracked_files"])):
+            config["tracked_files"][idx] = ''.join(config["tracked_files"][idx])
+
+    return config
+
 def get_gen(dir: str) -> int:
     gen_section = dir.split("_")[0]
     gen_num = int(gen_section[1:])
