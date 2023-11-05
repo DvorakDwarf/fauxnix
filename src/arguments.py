@@ -11,14 +11,37 @@ CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
 yaml = ruamel.yaml.YAML()
 
-def create_dir() -> str:
-   
-    dirs = os.listdir(GENERATION_DIR)
-    gen_name = sorted(dirs)[-1].split("_")[-1]
-    new_gen_name =str(int(gen_name[-1]) + 1)
+def get_gen(dir: str) -> int:
+    gen_section = dir.split("_")[0]
+    print(gen_section)
+    gen_num = int(gen_section[1:])
 
-    new_gen_dir = os.path.join(GENERATION_DIR, str(date.today()) + "_G" + new_gen_name)
+    print(gen_num)
+    return gen_num
+
+def get_sorted_gen() -> list:
+    pass
+
+def create_dir() -> str:
+    with open(CONFIG_PATH, 'r') as file:
+        #Unsafe ???
+        config: dict = yaml.load(file)
+
+    dirs = os.listdir(GENERATION_DIR)
+
+    if len(dirs) == 0:
+        new_gen_num = "0"
+    else:
+        #Take all gens, sort, find highest one, split along_, take 2nd character and following
+        gen_num = get_gen(sorted(dirs)[-1])
+        new_gen_num = str(gen_num + 1)
+    
+    current_date = str(date.today())
+    new_gen_dir = os.path.join(GENERATION_DIR, str("G" + new_gen_num + "_" + current_date))
     os.mkdir(new_gen_dir)
+
+    if len(dirs) > config["history_length"]:
+        print(sorted(dirs)[0])
 
     return new_gen_dir
 
@@ -63,9 +86,9 @@ def revert(target_gen: int):
     dirs = os.listdir(GENERATION_DIR)
     revert_dir = ""
     for dir in dirs:
-        split = dir.split("G")
+        gen_num = get_gen(dir)
         #Everything after G
-        if int(split[1]) == target_gen:
+        if gen_num == target_gen:
             revert_dir = dir
 
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
@@ -118,8 +141,8 @@ def list():
         return
 
     for dir in sorted(dirs):
-        split = dir.split("G")
-        generation_num = split[-1]
+        #Always starts with Gx
+        generation_num = dir[1]
 
         with open(os.path.join(GENERATION_DIR, dir, "meta.json")) as file:
             meta: dict = json.load(file)
@@ -135,3 +158,6 @@ def list():
     print("Available generations: ")
     for gen in generations:
         print(f"G{gen['generation']} - {gen['date']}")
+
+
+

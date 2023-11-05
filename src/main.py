@@ -38,8 +38,9 @@ if args.sync == True:
 
 #Revert must come with an argument
 elif args.revert != None:
-    print(type(args.revert))
     arguments.revert(args.revert)
+
+    print("Succesfully reverted")
 
 elif args.id == True:
     with open(CONFIG_PATH, 'r') as file:
