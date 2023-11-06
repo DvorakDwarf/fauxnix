@@ -1,5 +1,8 @@
 #It is recommended to define a home folder for reproducing on different system
-#Use custom !join tag for this purpose
+#Use the following format: 
+#tracked_files:
+#  - [*HOME, path/to/thing/from/home/folder]
+#  - /full/path/if/dont/care
 #I am not your dad though, do what you want. You can add full paths instead
 HOME: &HOME '/home/titleless'
 
@@ -8,7 +11,7 @@ tracked_files:
   - [*HOME, /.config/hypr/hyprpaper.conf]
   
 #Only the 1000 most recent generations will be saved
-history_length: 500
+history_length: 30
 #Pick date format. Default is dd/mm/yyyy
 day_first: true
 

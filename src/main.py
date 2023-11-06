@@ -11,7 +11,6 @@ yaml = ruamel.yaml.YAML()
 config = arguments.load_config()
 os.setegid(config["gid"])
 os.seteuid(config["uid"])
-print("The files!!!! is: " +str(config["tracked_files"]))
 
 parser = argparse.ArgumentParser(
                 prog='fauxnix',

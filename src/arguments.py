@@ -67,12 +67,10 @@ def copy_pkglist(new_gen_dir: str):
 
 #TODO
 def copy_configs(new_gen_dir):
-    with open(CONFIG_PATH, 'r') as file:
-        #Unsafe ???
-        config: dict = yaml.load(file)
-
+    config = load_config()
     now = datetime.now()
     meta: dict = {"og_paths": {}}
+    
     if config["day_first"] == True:
         meta["date"] = now.strftime("%d/%m/%Y %H:%M:%S")
         meta["day_first"] = True
@@ -109,9 +107,7 @@ def revert(target_gen: int):
 
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
 
-    with open(CONFIG_PATH, 'r') as file:
-        config = yaml.load(file)
-
+    config = load_config()
     with open(os.path.join(revert_dir, "meta.json")) as file:
         meta: dict = json.load(file)
 
@@ -146,9 +142,7 @@ def revert(target_gen: int):
 
 
 def list():
-    with open(CONFIG_PATH, 'r') as file:
-        config = yaml.load(file)
-
+    config = load_config()
     dirs = os.listdir(GENERATION_DIR)
     generations = []
 
