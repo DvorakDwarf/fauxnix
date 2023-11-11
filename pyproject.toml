@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fauxnix"
+authors = [
+    {name = "Vasya Pupkin", email = "dvorakdwarf@gmail.com"},
+]
+description = "Non-invasive* Reproducible* Declarative* config management for the Nix non-believers"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "GPL3"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "ruyaml",
+    'importlib-metadata; python_version<"3.8"',
+]
+dynamic = ["version"]
