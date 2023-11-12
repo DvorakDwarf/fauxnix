@@ -1,3 +1,9 @@
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"

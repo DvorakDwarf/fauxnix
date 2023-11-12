@@ -1,2 +1,1 @@
-graft fauxnix
-global-include config.yaml
+include src/fauxnix/*.yaml
