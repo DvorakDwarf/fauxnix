@@ -3,12 +3,11 @@ import ruamel.yaml
 import argparse
 
 import arguments
+import config
 
-DIRNAME = os.path.dirname(__file__)
-CONFIG_PATH = os.path.join(DIRNAME, 'config.yaml')
 yaml = ruamel.yaml.YAML()
 
-config = arguments.load_config()
+config = config.load_config(yaml)
 os.setegid(config["gid"])
 os.seteuid(config["uid"])
 
@@ -41,14 +40,12 @@ elif args.revert != None:
     print("Succesfully reverted")
 
 elif args.id == True:
-    with open(CONFIG_PATH, 'r') as file:
-        config = yaml.load(file)
+    config = config.load_config(yaml)
 
     config["uid"] = os.getuid()
     config["gid"] = os.getgid()
 
-    with open(CONFIG_PATH, 'w') as file:
-        yaml.dump(config, file)
+    config.dump_config(yaml, config)
 
     print("Succesfully copied this user's gid and uid")
 

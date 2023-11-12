@@ -5,22 +5,12 @@ import json
 import shutil
 from datetime import date, datetime
 
+import config
+
 DIRNAME = os.path.dirname(__file__)
 GENERATION_DIR = os.path.join(DIRNAME, "generations/")
 CONFIG_PATH = os.path.join(DIRNAME, 'config.yaml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
-yaml = ruamel.yaml.YAML()
-
-#Why have references if you can't concat them ????
-#Change return type to correct thing later
-def load_config() -> dict:    
-    with open(CONFIG_PATH, 'r') as file:
-        #Unsafe ???
-        config: dict = yaml.load(file)
-        for idx in range(len(config["tracked_files"])):
-            config["tracked_files"][idx] = ''.join(config["tracked_files"][idx])
-
-    return config
 
 def get_gen(dir: str) -> int:
     gen_section = dir.split("_")[0]
@@ -31,7 +21,7 @@ def get_gen(dir: str) -> int:
 def get_sorted_gen(dirs: list) -> list:
     return sorted(dirs, key=get_gen)
 
-def create_dir() -> str:
+def create_dir(yaml: ruamel.yaml.YAML) -> str:
     with open(CONFIG_PATH, 'r') as file:
         #Unsafe ???
         config: dict = yaml.load(file)
@@ -66,8 +56,8 @@ def copy_pkglist(new_gen_dir: str):
     shutil.copyfile(PKGLIST_PATH, new_pkglist_path)
 
 #TODO
-def copy_configs(new_gen_dir):
-    config = load_config()
+def copy_configs(yaml: ruamel.yaml.YAML, new_gen_dir: str):
+    config = config.load_config(yaml)
     now = datetime.now()
     meta: dict = {"og_paths": {}}
     
@@ -96,7 +86,7 @@ def copy_configs(new_gen_dir):
     with open(meta_path, 'w') as file:
         json.dump(meta, file, indent=4)
 
-def revert(target_gen: int):
+def revert(yaml: ruamel.yaml.YAML, target_gen: int):
     dirs = os.listdir(GENERATION_DIR)
     revert_dir = ""
     for dir in dirs:
@@ -107,7 +97,7 @@ def revert(target_gen: int):
 
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
 
-    config = load_config()
+    config = config.load_config(yaml)
     with open(os.path.join(revert_dir, "meta.json")) as file:
         meta: dict = json.load(file)
 
@@ -141,8 +131,8 @@ def revert(target_gen: int):
                 print("The file was not copied. Make sure this did not break anything")
 
 
-def list():
-    config = load_config()
+def list(yaml: ruamel.yaml.YAML):
+    config = config.load_config(yaml)
     dirs = os.listdir(GENERATION_DIR)
     generations = []
 
