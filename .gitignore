@@ -1,4 +1,4 @@
-src/fauxnix/pkglist.txt
+pkglist.txt
 src/backup.yml
 .vscode
 src/generations/*
