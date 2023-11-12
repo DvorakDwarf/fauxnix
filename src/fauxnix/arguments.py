@@ -5,12 +5,11 @@ import json
 import shutil
 from datetime import date, datetime
 
-import config
+import config_parser
 
 DIRNAME = os.path.dirname(__file__)
-GENERATION_DIR = os.path.join(DIRNAME, "generations/")
-CONFIG_PATH = os.path.join(DIRNAME, 'config.yaml')
-PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
+GENERATION_DIR = "~/.config/fauxnix/generations"
+PKGLIST_PATH = "~/.config/pkglist.txt"
 
 def get_gen(dir: str) -> int:
     gen_section = dir.split("_")[0]
@@ -22,12 +21,16 @@ def get_sorted_gen(dirs: list) -> list:
     return sorted(dirs, key=get_gen)
 
 def create_dir(yaml: ruamel.yaml.YAML) -> str:
-    with open(CONFIG_PATH, 'r') as file:
-        #Unsafe ???
-        config: dict = yaml.load(file)
+    config = config_parser.load_config(yaml)
 
     #The gens are sorted by the number in ascending order. Important
-    dirs = os.listdir(GENERATION_DIR)
+    try:
+        dirs = os.listdir(GENERATION_DIR)
+    except FileNotFoundError:
+        print("Generations directory could not be found")
+        print("Likely not initialized, please use fauxnix --init")
+        quit()
+    
     dirs = get_sorted_gen(dirs)
 
     if len(dirs) == 0:
@@ -57,7 +60,7 @@ def copy_pkglist(new_gen_dir: str):
 
 #TODO
 def copy_configs(yaml: ruamel.yaml.YAML, new_gen_dir: str):
-    config = config.load_config(yaml)
+    config = config_parser.load_config(yaml)
     now = datetime.now()
     meta: dict = {"og_paths": {}}
     
@@ -87,7 +90,13 @@ def copy_configs(yaml: ruamel.yaml.YAML, new_gen_dir: str):
         json.dump(meta, file, indent=4)
 
 def revert(yaml: ruamel.yaml.YAML, target_gen: int):
-    dirs = os.listdir(GENERATION_DIR)
+    try:
+        dirs = os.listdir(GENERATION_DIR)
+    except FileNotFoundError:
+        print("Generations directory could not be found")
+        print("Likely not initialized, please use fauxnix --init")
+        quit()
+        
     revert_dir = ""
     for dir in dirs:
         gen_num = get_gen(dir)
@@ -97,7 +106,7 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
 
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
 
-    config = config.load_config(yaml)
+    config = config_parser.load_config(yaml)
     with open(os.path.join(revert_dir, "meta.json")) as file:
         meta: dict = json.load(file)
 
@@ -132,8 +141,14 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
 
 
 def list(yaml: ruamel.yaml.YAML):
-    config = config.load_config(yaml)
-    dirs = os.listdir(GENERATION_DIR)
+    try:
+        dirs = os.listdir(GENERATION_DIR)
+    except FileNotFoundError:
+        print("Generations directory could not be found")
+        print("Likely not initialized, please use fauxnix --init")
+        quit()
+    
+    config = config_parser.load_config(yaml)
     generations = []
 
     if len(dirs) == 0:

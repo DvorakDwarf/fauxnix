@@ -1,16 +1,21 @@
 import os
 import ruamel.yaml
 
+DIRNAME = os.path.dirname(__file__)
 POSSIBLE_PATHS = [
     "~/.config/fauxnix/fauxnix.yaml",
     "~/.config/fauxnix/config.yaml",
-    "fauxnix.yaml" #local
+    os.path.join(DIRNAME, "fauxnix.yaml"), #local
     "/etc/fauxnix.yaml",
 ]
 
 def find_config() -> str:
     for path in POSSIBLE_PATHS:
         if os.path.exists(path):
+            if path == "/etc/fauxnix.yaml":
+                print("Using default config in /etc/fauxnix.yaml")
+                print("Please use fauxnix --init")
+                
             return path
 
 CONFIG_PATH = find_config()

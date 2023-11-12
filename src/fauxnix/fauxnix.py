@@ -3,13 +3,13 @@ import ruamel.yaml
 import argparse
 
 import arguments
-import config
+import config_parser
 
 yaml = ruamel.yaml.YAML()
 
-config = config.load_config(yaml)
-os.setegid(config["gid"])
-os.seteuid(config["uid"])
+config_parser = config_parser.load_config(yaml)
+os.setegid(config_parser["gid"])
+os.seteuid(config_parser["uid"])
 
 parser = argparse.ArgumentParser(
                 prog='fauxnix',
@@ -29,28 +29,28 @@ mxgroup.add_argument('-r', '--revert', type=int,
 args = parser.parse_args()
 
 if args.sync == True:
-    new_gen_dir = arguments.create_dir()
-    arguments.copy_pkglist(new_gen_dir)
-    arguments.copy_configs(new_gen_dir)
+    new_gen_dir = arguments.create_dir(yaml)
+    arguments.copy_pkglist(yaml, new_gen_dir)
+    arguments.copy_configs(yaml, new_gen_dir)
 
 #Revert must come with an argument
 elif args.revert != None:
-    arguments.revert(args.revert)
+    arguments.revert(yaml, args.revert)
 
     print("Succesfully reverted")
 
 elif args.id == True:
-    config = config.load_config(yaml)
+    config = config_parser.load_config(yaml)
 
-    config["uid"] = os.getuid()
-    config["gid"] = os.getgid()
+    config_parser["uid"] = os.getuid()
+    config_parser["gid"] = os.getgid()
 
-    config.dump_config(yaml, config)
+    config_parser.dump_config(yaml, config)
 
     print("Succesfully copied this user's gid and uid")
 
 elif args.list == True:
-    arguments.list()
+    arguments.list(yaml)
 
 else:
     parser.print_help()
