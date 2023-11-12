@@ -5,7 +5,7 @@ import argparse
 import arguments
 
 DIRNAME = os.path.dirname(__file__)
-CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
+CONFIG_PATH = os.path.join(DIRNAME, 'config.yaml')
 yaml = ruamel.yaml.YAML()
 
 config = arguments.load_config()

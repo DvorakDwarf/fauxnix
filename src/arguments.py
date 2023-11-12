@@ -7,7 +7,7 @@ from datetime import date, datetime
 
 DIRNAME = os.path.dirname(__file__)
 GENERATION_DIR = os.path.join(DIRNAME, "generations/")
-CONFIG_PATH = os.path.join(DIRNAME, 'config.yml')
+CONFIG_PATH = os.path.join(DIRNAME, 'config.yaml')
 PKGLIST_PATH = os.path.join(DIRNAME, 'pkglist.txt')
 yaml = ruamel.yaml.YAML()
 

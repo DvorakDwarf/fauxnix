@@ -1,1 +1,1 @@
-include src/pkglist.txt
+global-include config.yaml
