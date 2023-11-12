@@ -1,2 +1,2 @@
-graft src
+graft fauxnix
 global-include config.yaml
