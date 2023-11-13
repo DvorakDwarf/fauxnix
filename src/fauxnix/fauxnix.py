@@ -58,7 +58,7 @@ elif args.list == True:
 
 elif args.init == True:
     arguments.initialize(yaml)
-    print("Succesfully initialized. Modify .config/fauxnix/fauxnix.yaml to add tracked files and change settings")
+    print("Succesfully initialized. Modify ~/.config/fauxnix/fauxnix.yaml to add tracked files and change settings")
 
 else:
     parser.print_help()

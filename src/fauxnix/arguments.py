@@ -120,7 +120,7 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
     # subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
 
     for tracked_file in meta["og_paths"]:
-        old_path = meta["og_paths"][tracked_file]
+        old_path = os.path.expandvars(meta["og_paths"][tracked_file])
         gen_file = os.path.join(revert_dir, tracked_file)
         try:
             shutil.copyfile(gen_file, old_path)
