@@ -7,9 +7,9 @@ import config_parser
 
 yaml = ruamel.yaml.YAML()
 
-config_parser = config_parser.load_config(yaml)
-os.setegid(config_parser["gid"])
-os.seteuid(config_parser["uid"])
+config = config_parser.load_config(yaml)
+os.setegid(config["gid"])
+os.seteuid(config["uid"])
 
 parser = argparse.ArgumentParser(
                 prog='fauxnix',
@@ -25,6 +25,8 @@ mxgroup.add_argument('-l', '--list', action='store_true',
                     help="list existing generations") 
 mxgroup.add_argument('-r', '--revert', type=int,
                     help="revert to previous generation. Takes generation #") 
+mxgroup.add_argument('-in','--init', action='store_true',
+                    help="Run this after installation as the user for stuff to work") 
 
 args = parser.parse_args()
 
@@ -42,8 +44,8 @@ elif args.revert != None:
 elif args.id == True:
     config = config_parser.load_config(yaml)
 
-    config_parser["uid"] = os.getuid()
-    config_parser["gid"] = os.getgid()
+    config["uid"] = os.getuid()
+    config["gid"] = os.getgid()
 
     config_parser.dump_config(yaml, config)
 
@@ -51,6 +53,10 @@ elif args.id == True:
 
 elif args.list == True:
     arguments.list(yaml)
+
+elif args.init == True:
+    arguments.initialize(yaml)
+    print("Succesfully initialized. Modify .config/fauxnix/fauxnix.yaml to add tracked files and change settings")
 
 else:
     parser.print_help()

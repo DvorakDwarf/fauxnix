@@ -9,7 +9,7 @@ import config_parser
 
 DIRNAME = os.path.dirname(__file__)
 GENERATION_DIR = "~/.config/fauxnix/generations"
-PKGLIST_PATH = "~/.config/pkglist.txt"
+PKGLIST_PATH = "~/.config/fauxnix/pkglist.txt"
 
 def get_gen(dir: str) -> int:
     gen_section = dir.split("_")[0]
@@ -139,7 +139,6 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
             else:
                 print("The file was not copied. Make sure this did not break anything")
 
-
 def list(yaml: ruamel.yaml.YAML):
     try:
         dirs = os.listdir(GENERATION_DIR)
@@ -174,5 +173,40 @@ def list(yaml: ruamel.yaml.YAML):
     for gen in generations:
         print(f"G{gen['generation']} - {gen['date']}")
 
+def initialize(yaml: ruamel.yaml.YAML):
+    config = config_parser.load_config(yaml)
+    config["uid"] = os.getuid()
+    config["gid"] = os.getgid()
 
+    home_dir = os.environ["HOME"]
+    main_dir = os.path.join(home_dir, ".config/fauxnix")
+    gen_dir = os.path.join(main_dir, "generations")
+    pkglist_path = os.path.join(main_dir, "pkglist.txt")
+    new_config_path = os.path.join(main_dir, "fauxnix.yaml")
+
+    if os.path.exists(main_dir) == False:
+        os.mkdir(main_dir)
+        print(f"Created {main_dir}")
+
+    if os.path.exists(gen_dir) == False:
+        os.mkdir(gen_dir)
+        print(f"Created {gen_dir}")
+
+
+    if os.path.exists(pkglist_path) == False:
+        #Create empty file
+        with open(pkglist_path, "w") as file: 
+            pass
+
+        print(f"Created {pkglist_path}")
+
+    #If config already there, does nothing. Otherwise copies new one
+    old_config_path = config_parser.find_config()
+    try:
+        shutil.copyfile(old_config_path, new_config_path)
+    except shutil.SameFileError:
+        pass
+    print(f"Copied {old_config_path} to {new_config_path}")
+
+    config_parser.dump_config(yaml, config)
 

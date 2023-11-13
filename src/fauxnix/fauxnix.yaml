@@ -1,15 +1,7 @@
-#It is recommended to define a home folder for reproducing on different system
-#Use the following format: 
-#tracked_files:
-#  - [*HOME, path/to/thing/from/home/folder]
-#  - /full/path/if/dont/care
-#I am not your dad though, do what you want. You can add full paths instead
-HOME: &HOME '/home/titleless'
-
 #What config files will be copied each generation
 tracked_files:
-  - [*HOME, /.config/hypr/hyprpaper.conf]
-  
+- $HOME/.config/hypr/hyprpaper.conf
+
 #Only the 1000 most recent generations will be saved
 history_length: 30
 #Pick date format. Default is dd/mm/yyyy
@@ -28,3 +20,12 @@ update_command: 'paru --needed -S - < '
 #Required for when the script is run as root by pacman hook
 uid: 1000
 gid: 1000
+
+#ABANDONED FUNCTIONALITY
+
+#Use variables as follows in paths to files
+#tracked_files:
+#  - [*HOME, path/to/thing/from/home/folder]
+#  - /full/path/if/dont/care
+#I am not your dad though, do what you want. You can add full paths instead
+#HOME: &HOME '${HOME}'
