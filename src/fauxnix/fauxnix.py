@@ -32,8 +32,10 @@ args = parser.parse_args()
 
 if args.sync == True:
     new_gen_dir = arguments.create_dir(yaml)
-    arguments.copy_pkglist(yaml, new_gen_dir)
+    arguments.copy_pkglist(new_gen_dir)
     arguments.copy_configs(yaml, new_gen_dir)
+
+    print(f"Synced succesfully at {new_gen_dir}")
 
 #Revert must come with an argument
 elif args.revert != None:

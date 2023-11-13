@@ -7,9 +7,8 @@ from datetime import date, datetime
 
 import config_parser
 
-DIRNAME = os.path.dirname(__file__)
-GENERATION_DIR = "~/.config/fauxnix/generations"
-PKGLIST_PATH = "~/.config/fauxnix/pkglist.txt"
+GENERATION_DIR = os.path.join(os.environ["HOME"], ".config/fauxnix/generations")
+PKGLIST_PATH = os.path.join(os.environ["HOME"], ".config/fauxnix/pkglist.txt")
 
 def get_gen(dir: str) -> int:
     gen_section = dir.split("_")[0]
@@ -55,7 +54,7 @@ def create_dir(yaml: ruamel.yaml.YAML) -> str:
     return new_gen_dir
 
 def copy_pkglist(new_gen_dir: str):
-    new_pkglist_path = os.path.join(DIRNAME, new_gen_dir, "pkglist.txt")
+    new_pkglist_path = os.path.join(new_gen_dir, "pkglist.txt")
     shutil.copyfile(PKGLIST_PATH, new_pkglist_path)
 
 #TODO
@@ -76,16 +75,17 @@ def copy_configs(yaml: ruamel.yaml.YAML, new_gen_dir: str):
         meta["day_first"] = True
 
     for file_path in config['tracked_files']:
+        expanded_path = os.path.expandvars(file_path)
         filename = file_path.split('/')[-1]
         new_config_path = os.path.join(new_gen_dir, filename)
         try:
-            shutil.copyfile(file_path, new_config_path)
+            shutil.copyfile(expanded_path, new_config_path)
         except FileNotFoundError:
-            print(f"File {file_path} not found!!!")
+            print(f"File {expanded_path} not found!!!")
 
         meta['og_paths'][filename] = file_path
 
-    meta_path = os.path.join(DIRNAME, new_gen_dir, "meta.json")
+    meta_path = os.path.join(new_gen_dir, "meta.json")
     with open(meta_path, 'w') as file:
         json.dump(meta, file, indent=4)
 
