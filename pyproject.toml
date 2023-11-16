@@ -1,6 +1,3 @@
-[tool.setuptools]
-include-package-data = true
-
 [tool.setuptools.packages.find]
 where = ["src"]
 
@@ -26,3 +23,6 @@ dependencies = [
     "ruyaml",
 ]
 dynamic = ["version"]
+
+[project.scripts]
+fauxnix = "fauxnix.fauxnix:main"

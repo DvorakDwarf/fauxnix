@@ -5,7 +5,7 @@ import json
 import shutil
 from datetime import date, datetime
 
-import config_parser
+import fauxnix.config_parser
 
 GENERATION_DIR = os.path.join(os.environ["HOME"], ".config/fauxnix/generations")
 PKGLIST_PATH = os.path.join(os.environ["HOME"], ".config/fauxnix/pkglist.txt")
