@@ -38,6 +38,8 @@ def main():
             new_gen_dir = arguments.create_dir(yaml)
         except PermissionError:
             print("fauxnix not configured yet. Run fauxnix --init as user first")
+            exit()
+        
         arguments.copy_pkglist(new_gen_dir)
         arguments.copy_configs(yaml, new_gen_dir)
 
