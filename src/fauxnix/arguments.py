@@ -158,8 +158,12 @@ def list(yaml: ruamel.yaml.YAML):
         #Always starts with Gx
         generation_num = utils.get_gen(dir)
 
-        with open(os.path.join(GENERATION_DIR, dir, "meta.json")) as file:
-            meta: dict = json.load(file)
+        try:
+            with open(os.path.join(GENERATION_DIR, dir, "meta.json")) as file:
+                meta: dict = json.load(file)
+        except:
+            print(f"Unable to find meta.json in {dir}")
+            continue
 
         if config["day_first"] != meta["day_first"]:
             #Swap day and month around
