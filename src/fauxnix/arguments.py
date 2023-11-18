@@ -88,6 +88,9 @@ def copy_configs(yaml: ruamel.yaml.YAML, new_gen_dir: str):
         json.dump(meta, file, indent=4)
 
 def revert(yaml: ruamel.yaml.YAML, target_gen: int):
+    config = config_parser.load_config(yaml)
+    utils.set_envs(config)
+
     try:
         dirs = os.listdir(GENERATION_DIR)
     except FileNotFoundError:
@@ -95,18 +98,10 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         print("Likely not initialized, please use fauxnix --init")
         quit()
         
-    revert_dir = ""
-    for dir in dirs:
-        gen_num = utils.get_gen(dir)
-        #Everything after G
-        if gen_num == target_gen:
-            revert_dir = dir
-
+    
+    revert_dir = utils.find_gen(dirs, target_gen)
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
 
-    config = config_parser.load_config(yaml)
-    utils.set_envs(config)
-    
     try:
         with open(os.path.join(revert_dir, "meta.json")) as file:
             meta: dict = json.load(file)

@@ -18,6 +18,19 @@ def get_gen_dir(yaml: ruamel.yaml.YAML) -> str:
 
     return GENERATION_DIR
 
+def find_gen(dirs: list, target_gen: int) -> str:
+    return_dir = ""
+    for dir in dirs:
+        gen_num = get_gen(dir)
+        #Everything after G
+        if gen_num == target_gen:
+            return_dir = dir
+
+    print(target_gen)
+    print(return_dir)
+
+    return return_dir
+
 def get_pkglist_path(yaml: ruamel.yaml.YAML) -> str:
     storage = config_parser.load_config(yaml)["storage"]
     PKGLIST_PATH = os.path.join(storage, "fauxnix/pkglist.txt")
