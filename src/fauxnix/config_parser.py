@@ -22,8 +22,13 @@ CONFIG_PATH = find_config()
 
 #Why have references if you can't concat them ????
 #Change return type to correct thing later
-def load_config(yaml: ruamel.yaml.YAML) -> dict:  
-    with open(CONFIG_PATH, 'r') as file:
+def load_config(yaml: ruamel.yaml.YAML, forced_local: bool = False) -> dict:  
+    active_config = CONFIG_PATH
+
+    if forced_local == True:
+        active_config = os.path.join(DIRNAME, "fauxnix.yaml")
+
+    with open(active_config, 'r') as file:
         #Unsafe ???
         config: dict = yaml.load(file)
         for idx in range(len(config["tracked_files"])):
@@ -31,7 +36,12 @@ def load_config(yaml: ruamel.yaml.YAML) -> dict:
 
     return config
 
-def dump_config(yaml: ruamel.yaml.YAML, config: dict):
-    with open(CONFIG_PATH, 'w') as file:
+def dump_config(yaml: ruamel.yaml.YAML, config: dict, forced_local: bool = False):
+    active_config = CONFIG_PATH
+
+    if forced_local == True:
+        active_config = os.path.join(DIRNAME, "fauxnix.yaml")
+
+    with open(active_config, 'w') as file:
         yaml.dump(config, file)
 

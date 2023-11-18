@@ -25,4 +25,4 @@ dependencies = [
 dynamic = ["version"]
 
 [project.scripts]
-fauxnix = "fauxnix.fauxnix:main"
+fauxnix = "fauxnix.main:main"

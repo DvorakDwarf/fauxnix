@@ -48,7 +48,6 @@ def main():
     #Revert must come with an argument
     elif args.revert != None:
         arguments.revert(yaml, args.revert)
-
         print("Succesfully reverted")
 
     elif args.id == True:
@@ -71,4 +70,7 @@ def main():
     else:
         parser.print_help()
 
-            
+#Bad practice ?
+#Here for easier testing
+if __name__ == "__main__":
+    main()

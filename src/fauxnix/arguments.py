@@ -6,18 +6,13 @@ import shutil
 from datetime import date, datetime
 
 import fauxnix.config_parser as config_parser
+import fauxnix.utils as utils
 
-GENERATION_DIR = os.path.join(os.environ["HOME"], ".config/fauxnix/generations")
-PKGLIST_PATH = os.path.join(os.environ["HOME"], ".config/fauxnix/pkglist.txt")
+const_yaml = ruamel.yaml.YAML()
 
-def get_gen(dir: str) -> int:
-    gen_section = dir.split("_")[0]
-    gen_num = int(gen_section[1:])
-
-    return gen_num
-
-def get_sorted_gen(dirs: list) -> list:
-    return sorted(dirs, key=get_gen)
+#To keep PKGLIST_PATH and GENERATION_DIR global, we break the rule of 1 yaml
+GENERATION_DIR = utils.get_gen_dir(const_yaml)
+PKGLIST_PATH = utils.get_pkglist_path(const_yaml)
 
 def create_dir(yaml: ruamel.yaml.YAML) -> str:
     config = config_parser.load_config(yaml)
@@ -30,13 +25,13 @@ def create_dir(yaml: ruamel.yaml.YAML) -> str:
         print("Likely not initialized, please use fauxnix --init")
         quit()
     
-    dirs = get_sorted_gen(dirs)
+    dirs = utils.get_sorted_gen(dirs)
 
     if len(dirs) == 0:
         new_gen_num = "0"
     else:
         #Take all gens, sort, find highest one, split along_, take 2nd character and following
-        gen_num = get_gen(dirs[-1])
+        gen_num = utils.get_gen(dirs[-1])
         new_gen_num = str(gen_num + 1)
     
     current_date = str(date.today())
@@ -74,6 +69,9 @@ def copy_configs(yaml: ruamel.yaml.YAML, new_gen_dir: str):
         meta["date"] = now.strftime("%d/%m/%Y %H:%M:%S")
         meta["day_first"] = True
 
+    #Set temporary environment variables for when used with root
+    utils.set_envs(config)
+
     for file_path in config['tracked_files']:
         expanded_path = os.path.expandvars(file_path)
         filename = file_path.split('/')[-1]
@@ -99,7 +97,7 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         
     revert_dir = ""
     for dir in dirs:
-        gen_num = get_gen(dir)
+        gen_num = utils.get_gen(dir)
         #Everything after G
         if gen_num == target_gen:
             revert_dir = dir
@@ -154,9 +152,9 @@ def list(yaml: ruamel.yaml.YAML):
         print("No exisiting generations, try syncing first!")
         return
 
-    for dir in get_sorted_gen(dirs):
+    for dir in utils.get_sorted_gen(dirs):
         #Always starts with Gx
-        generation_num = get_gen(dir)
+        generation_num = utils.get_gen(dir)
 
         with open(os.path.join(GENERATION_DIR, dir, "meta.json")) as file:
             meta: dict = json.load(file)
@@ -175,7 +173,13 @@ def list(yaml: ruamel.yaml.YAML):
 
 def initialize(yaml: ruamel.yaml.YAML):
     config = config_parser.load_config(yaml)
-    config["storage"] = os.environ["HOME"]
+
+    storage_dir = os.path.join(os.environ["HOME"], ".config")
+    config["storage"] = storage_dir
+    #Local config must redirect to main config when run as root
+    local_config = config_parser.load_config(yaml, forced_local=True)
+    local_config["storage"] = storage_dir
+
     config["uid"] = os.getuid()
     config["gid"] = os.getgid()
 
@@ -210,4 +214,5 @@ def initialize(yaml: ruamel.yaml.YAML):
     print(f"Copied {old_config_path} to {new_config_path}")
 
     config_parser.dump_config(yaml, config)
+    config_parser.dump_config(yaml, local_config, forced_local=True)
 

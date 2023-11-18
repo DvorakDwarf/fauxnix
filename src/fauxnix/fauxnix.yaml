@@ -1,5 +1,10 @@
 #Where the primary folder will be. Set at init. Default to .config
-storage: ""
+storage: /home/titleless/.config
+
+#If you use environment variables in paths, you need to set them here
+#It is necessary to let the root user use them
+env:
+  HOME: /home/titleless/
 
 #What config files will be copied each generation
 tracked_files:
