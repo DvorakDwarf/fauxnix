@@ -34,7 +34,10 @@ def main():
     args = parser.parse_args()
 
     if args.sync == True:
-        new_gen_dir = arguments.create_dir(yaml)
+        try:
+            new_gen_dir = arguments.create_dir(yaml)
+        except PermissionError:
+            print("fauxnix not configured yet. Run fauxnix --init as user first")
         arguments.copy_pkglist(new_gen_dir)
         arguments.copy_configs(yaml, new_gen_dir)
 

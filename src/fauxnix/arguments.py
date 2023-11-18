@@ -175,6 +175,7 @@ def list(yaml: ruamel.yaml.YAML):
 
 def initialize(yaml: ruamel.yaml.YAML):
     config = config_parser.load_config(yaml)
+    config["storage"] = os.environ["HOME"]
     config["uid"] = os.getuid()
     config["gid"] = os.getgid()
 
