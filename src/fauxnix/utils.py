@@ -23,8 +23,6 @@ def find_gen(dirs: list, target_gen: int) -> str:
         gen_num = get_gen(dir)
         #Everything after G
         if gen_num == target_gen:
-            print(target_gen)
-            print(dir)
             return dir
 
     return ""    
