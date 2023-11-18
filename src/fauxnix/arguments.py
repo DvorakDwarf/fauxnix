@@ -110,7 +110,7 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         with open(os.path.join(revert_dir, "meta.json")) as file:
             meta: dict = json.load(file)
     except:
-        print(f"Unable to find meta.json in {dir}")
+        print(f"Unable to find meta.json in G{target_gen}")
         exit()
 
 
