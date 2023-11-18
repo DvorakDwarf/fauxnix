@@ -100,6 +100,10 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         
     
     revert_dir = utils.find_gen(dirs, target_gen)
+    if revert_dir == "":
+        print(f"Could not find G{target_gen}")
+        exit()
+
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
 
     try:
