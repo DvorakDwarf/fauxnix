@@ -105,6 +105,8 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
     revert_dir = os.path.join(GENERATION_DIR, revert_dir)
 
     config = config_parser.load_config(yaml)
+    utils.set_envs(config)
+    
     with open(os.path.join(revert_dir, "meta.json")) as file:
         meta: dict = json.load(file)
 
