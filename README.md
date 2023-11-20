@@ -12,6 +12,7 @@ It's an Arch Linux python script to store and restore past states of your PC. Ev
 * View existing generation (`fauxnix -l`)
 * Revert to a previous generation (`fauxnix -r GENERATION_NUMBER`)
 * Reconstruct your system on a new machine given you copied the generation you want to revert to
+* As a consequence it makes sharing your dotfiles and rice easier
 * Let you keep saying you use arch, btw
 
 ## Installation
