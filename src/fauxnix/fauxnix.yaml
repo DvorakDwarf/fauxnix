@@ -29,8 +29,18 @@ update_command: 'paru --needed -S - < '
 uid: 1000
 gid: 1000
 
-#ABANDONED FUNCTIONALITY
 
+
+
+
+
+
+
+
+
+
+
+#ABANDONED FUNCTIONALITY
 #Use variables as follows in paths to files
 #tracked_files:
 #  - [*HOME, path/to/thing/from/home/folder]
