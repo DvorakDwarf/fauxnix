@@ -16,7 +16,7 @@ It's an Arch Linux python script to store and restore past states of your PC. Ev
 * Let you keep saying you use arch, btw
 
 ## Installation
-1. Use your AUR helper of choice on `fauxnix-git` such as `paru -S fauxnix-git` or clone this repo
+1. Use your AUR helper of choice on `fauxnix-git` such as `paru -S fauxnix-git` or clone this repo (it will likely give errors until you do step 2)
 2. Run `fauxnix --init` as the user
 3. Edit the config in `fauxnix.yaml` inside `~/.config/fauxnix` according to the instructions inside
 4. `fauxnix --help` for all commands
