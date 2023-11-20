@@ -116,13 +116,12 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
 
     old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
     revert_command = config["update_command"] + old_pkg_path
-    print(revert_command)
-    # subprocess.run(revert_command, shell=True)
+    subprocess.run(revert_command, shell=True)
 
-    # #Makes this unique to pacman, find more general workaround later
-    # subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
-    # subprocess.run(f"sudo pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
-    # subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
+    #Makes this unique to pacman, find more general workaround later
+    subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
+    subprocess.run(f"sudo pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
+    subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
 
     for tracked_file in meta["og_paths"]:
         old_path = os.path.expandvars(meta["og_paths"][tracked_file])
