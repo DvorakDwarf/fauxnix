@@ -116,6 +116,7 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
 
     old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
     revert_command = config["update_command"] + old_pkg_path
+    print(revert_command)
     # subprocess.run(revert_command, shell=True)
 
     # #Makes this unique to pacman, find more general workaround later
