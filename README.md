@@ -1,2 +1,2 @@
 # fauxnix
-Declarative configuration for the people, not sysadmins
+Non-invasive* Reproducible* Declarative* config management for Nix non-believers
