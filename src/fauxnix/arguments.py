@@ -1,4 +1,5 @@
 import os
+import pwd
 import subprocess
 import ruamel.yaml
 import json 
@@ -184,19 +185,21 @@ def list(yaml: ruamel.yaml.YAML):
 def sync_pkglist(yaml: ruamel.yaml.YAML):
     subprocess.run(f"sudo pacman -Qqe > {PKGLIST_PATH}", shell=True)
 
-def initialize(yaml: ruamel.yaml.YAML):
+def initialize(yaml: ruamel.yaml.YAML, HOME: str):
     config = config_parser.load_config(yaml)
 
-    storage_dir = os.path.join(os.environ["HOME"], ".config")
+    username = HOME.split('/')[-1]
+
+    storage_dir = os.path.join(HOME, ".config")
     config["storage"] = storage_dir
     #Local config must redirect to main config when run as root
     local_config = config_parser.load_config(yaml, forced_local=True)
     local_config["storage"] = storage_dir
 
-    config["uid"] = os.getuid()
-    config["gid"] = os.getgid()
+    config["uid"] = pwd.getpwnam(username).pw_uid
+    config["gid"] = pwd.getpwnam(username).pw_gid
 
-    home_dir = os.environ["HOME"]
+    home_dir = HOME
     main_dir = os.path.join(home_dir, ".config/fauxnix")
     gen_dir = os.path.join(main_dir, "generations")
     pkglist_path = os.path.join(main_dir, "pkglist.txt")
