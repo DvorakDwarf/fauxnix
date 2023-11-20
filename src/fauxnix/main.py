@@ -22,15 +22,16 @@ def main():
     mxgroup = parser.add_mutually_exclusive_group()
     mxgroup.add_argument('-s', '--sync', action='store_true',
                         help="create new generation") 
-    mxgroup.add_argument('-i', '--id', action='store_true',
-                        help="place the user uid and gid in the config") 
     mxgroup.add_argument('-l', '--list', action='store_true',
-                        help="list existing generations") 
+                    help="list existing generations") 
     mxgroup.add_argument('-r', '--revert', type=int,
                         help="revert to previous generation. Takes generation #") 
     mxgroup.add_argument('-in','--init', action='store_true',
                         help="Run this after installation as the user for stuff to work") 
-
+    mxgroup.add_argument('-i', '--id', action='store_true',
+                        help="place the user uid and gid in the config") 
+    mxgroup.add_argument('-p', '--pkglist', action='store_true',
+                    help="Copy packages to pkglist.txt. Intended for hooks, not users") 
     args = parser.parse_args()
 
     if args.sync == True:
@@ -62,6 +63,9 @@ def main():
 
     elif args.list == True:
         arguments.list(yaml)
+
+    elif args.pkglist == True:
+        arguments.sync_pkglist(yaml)
 
     elif args.init == True:
         arguments.initialize(yaml)

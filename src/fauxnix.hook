@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Update package list
+When = PostTransaction
+#-n to avoid aur packages
+Exec = /bin/sh -c 'fauxnix -p && /usr/bin/fauxnix -s'

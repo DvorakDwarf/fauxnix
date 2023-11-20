@@ -181,6 +181,9 @@ def list(yaml: ruamel.yaml.YAML):
     for gen in generations:
         print(f"G{gen['generation']} - {gen['date']}")
 
+def sync_pkglist(yaml: ruamel.yaml.YAML):
+    subprocess.run(f"sudo pacman -Qqe > {PKGLIST_PATH}", shell=True)
+
 def initialize(yaml: ruamel.yaml.YAML):
     config = config_parser.load_config(yaml)
 
