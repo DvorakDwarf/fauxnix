@@ -115,6 +115,10 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         exit()
 
     old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
+    if os.path.getsize(old_pkg_path) == 0:
+        print("The pkglist.txt is empty, something must have gone wrong, try fauxnix -s. If the issue persists, report on github")
+        exit()
+
     revert_command = config["update_command"] + old_pkg_path
     subprocess.run(revert_command, shell=True)
 
