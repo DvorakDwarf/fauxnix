@@ -40,7 +40,7 @@ def load_config(yaml: ruamel.yaml.YAML) -> dict:
 
 def dump_config(yaml: ruamel.yaml.YAML, config: dict):
     active_config = CONFIG_PATH
-    
+
     #If user is root, find first available home user
     #If you have multiple active users with fauxnix, you are screwed
     if os.getuid() == 0:
@@ -58,5 +58,5 @@ def find_home() -> str:
         if os.path.exists(fauxnix_config):
             return fauxnix_config
 
-    print("Could not find config, defaulting")
+    # print("Could not find config, defaulting")
     return CONFIG_PATH
