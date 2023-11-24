@@ -11,9 +11,8 @@ import fauxnix.utils as utils
 
 const_yaml = ruamel.yaml.YAML()
 
-#To keep PKGLIST_PATH and GENERATION_DIR global, we break the rule of 1 yaml
+#To keep GENERATION_DIR global, we break the rule of 1 yaml
 GENERATION_DIR = utils.get_gen_dir(const_yaml)
-PKGLIST_PATH = utils.get_pkglist_path(const_yaml)
 
 def create_dir(yaml: ruamel.yaml.YAML) -> str:
     config = config_parser.load_config(yaml)
@@ -50,6 +49,7 @@ def create_dir(yaml: ruamel.yaml.YAML) -> str:
     return new_gen_dir
 
 def copy_pkglist(new_gen_dir: str):
+    PKGLIST_PATH = utils.get_pkglist_path(const_yaml)
     new_pkglist_path = os.path.join(new_gen_dir, "pkglist.txt")
     shutil.copyfile(PKGLIST_PATH, new_pkglist_path)
 
@@ -191,6 +191,7 @@ def list(yaml: ruamel.yaml.YAML):
         print(f"G{gen['generation']} - {gen['date']}")
 
 def sync_pkglist(yaml: ruamel.yaml.YAML):
+    PKGLIST_PATH = utils.get_pkglist_path(const_yaml)
     subprocess.run(f"sudo pacman -Qqe > {PKGLIST_PATH}", shell=True)
 
 def initialize(yaml: ruamel.yaml.YAML):    
