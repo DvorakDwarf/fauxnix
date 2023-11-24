@@ -235,3 +235,8 @@ def initialize(yaml: ruamel.yaml.YAML):
 
     config_parser.dump_config(yaml, config)
 
+    new_gen_dir = create_dir(yaml)
+    copy_pkglist(new_gen_dir)
+    copy_configs(yaml, new_gen_dir)
+
+    print(f"Synced succesfully at {new_gen_dir}")
