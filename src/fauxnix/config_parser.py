@@ -9,6 +9,8 @@ POSSIBLE_PATHS = [
     "/etc/fauxnix.yaml",
 ]
 
+print(POSSIBLE_PATHS)
+
 def find_config() -> str:
     for path in POSSIBLE_PATHS:
         if os.path.exists(path):
@@ -46,6 +48,7 @@ def dump_config(yaml: ruamel.yaml.YAML, config: dict):
     if os.getuid() == 0:
         active_config = find_home()
 
+    print(active_config)
     with open(active_config, 'w') as file:
         yaml.dump(config, file)
 
