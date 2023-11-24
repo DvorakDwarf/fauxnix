@@ -23,7 +23,7 @@ def create_dir(yaml: ruamel.yaml.YAML) -> str:
         dirs = os.listdir(GENERATION_DIR)
     except FileNotFoundError:
         print("Generations directory could not be found")
-        print("Likely not initialized, please use fauxnix --init")
+        print("Likely not initialized, please use:\nfauxnix --init")
         quit()
     
     dirs = utils.get_sorted_gen(dirs)
@@ -96,7 +96,7 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         dirs = os.listdir(GENERATION_DIR)
     except FileNotFoundError:
         print("Generations directory could not be found")
-        print("Likely not initialized, please use fauxnix --init")
+        print("Likely not initialized, please use:\nfauxnix --init")
         quit()
         
     
@@ -149,7 +149,7 @@ def list(yaml: ruamel.yaml.YAML):
         dirs = os.listdir(GENERATION_DIR)
     except FileNotFoundError:
         print("Generations directory could not be found")
-        print("Likely not initialized, please use fauxnix --init")
+        print("Likely not initialized, please use:\nfauxnix --init")
         quit()
     
     config = config_parser.load_config(yaml)
