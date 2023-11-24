@@ -1,3 +1,5 @@
+#CURRENTLY NOT FUNCTION, COME BACK LATER
+
 # fauxnix (pho-nix)
 Non-invasive* Reproducible* Declarative* config management for Nix non-believers
 ![2023-11-19_18-32](https://github.com/DvorakDwarf/fauxnix/assets/96934612/7d091ce7-4d95-4ea9-a87a-e568ca3871e5)
