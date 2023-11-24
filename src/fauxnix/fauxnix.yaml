@@ -1,5 +1,5 @@
 #Where the primary folder will be. Set at init. Default to .config
-storage: "STORAGE NOT SET WITH fauxnix --init"
+storage: ""
 
 #If you use environment variables in paths, you need to set them here
 #It is necessary to let the root user use them
