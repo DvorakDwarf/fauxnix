@@ -4,8 +4,8 @@ import os
 import ruamel.yaml
 import argparse
 
-import arguments as arguments
-import config_parser as config_parser
+import fauxnix.arguments as arguments
+import fauxnix.config_parser as config_parser
 
 def main():
     yaml = ruamel.yaml.YAML()
