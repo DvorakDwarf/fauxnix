@@ -235,4 +235,4 @@ def initialize(yaml: ruamel.yaml.YAML):
 
     config_parser.dump_config(yaml, config)
 
-    sync_pkglist()
+    sync_pkglist(yaml)
