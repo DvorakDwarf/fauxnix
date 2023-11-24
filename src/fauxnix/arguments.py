@@ -185,16 +185,8 @@ def list(yaml: ruamel.yaml.YAML):
 def sync_pkglist(yaml: ruamel.yaml.YAML):
     subprocess.run(f"sudo pacman -Qqe > {PKGLIST_PATH}", shell=True)
 
-def initialize(yaml: ruamel.yaml.YAML):
-    config = config_parser.load_config(yaml)
-    
+def initialize(yaml: ruamel.yaml.YAML):    
     HOME = os.environ["HOME"]
-
-    storage_dir = os.path.join(HOME, ".config")
-    config["storage"] = storage_dir
-
-    config["uid"] = os.getuid()
-    config["gid"] = os.getgid()
 
     main_dir = os.path.join(HOME, ".config/fauxnix")
     gen_dir = os.path.join(main_dir, "generations")
@@ -224,6 +216,14 @@ def initialize(yaml: ruamel.yaml.YAML):
     except shutil.SameFileError:
         pass
     print(f"Copied {old_config_path} to {new_config_path}")
+
+    config = config_parser.load_config(yaml)
+
+    storage_dir = os.path.join(HOME, ".config")
+    config["storage"] = storage_dir
+
+    config["uid"] = os.getuid()
+    config["gid"] = os.getgid()
 
     config_parser.dump_config(yaml, config)
 
