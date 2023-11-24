@@ -20,7 +20,8 @@ It's an Arch Linux python script to store and restore past states of your PC. Ev
 2. Run `fauxnix --init` as the user
 3. Edit the config in `fauxnix.yaml` inside `~/.config/fauxnix` according to the instructions inside
 4. `fauxnix --help` for all commands
-5. PROFIT
+5. I would copy the `~/.config/fauxnix/pkglist.txt` somewhere in case the revert command does something wrong
+6. PROFIT
 
 ## Why use this over Nix/NixOS ?
 When I used NixOS I felt like a neanderthal having to edit what packages I want in the config instead of just using a command like pacman (`nix-env` doesn't count). I didn't like Nix store and how it locks you into using Nix packages and breaking stuff you might normally install with git or some such. The gravest offense was the fact that osu! was laggy as hell and several versions behind. There are some other minor annoyances I had with Nix that all together made me crawl back into the inviting arms of Arch Linux and having full control over my system. I recognize this is petty and I don't care. If you relate to any of this but still like the idea of saving your system state and being able to reproduce it like me, you might like **fauxnix**, the fake nix.
