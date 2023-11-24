@@ -1,5 +1,5 @@
 #Where the primary folder will be. Set at init. Default to .config
-storage: /home/titleless/.config
+storage: "STORAGE NOT SET WITH --init"
 
 #If you use environment variables in paths, you need to set them here
 #It is necessary to let the root user use them
@@ -8,24 +8,23 @@ env:
 
 #What config files will be copied each generation
 tracked_files:
-- ${HOME}/.config/hypr/hyprpaper.conf
+- ${HOME}/.config/hypr/hyprpaper.conf #Example
 
-#Only the 1000 most recent generations will be saved
-history_length: 30
-#Pick date format. Default is dd/mm/yyyy
+#Only N most recent generations will be saved
+history_length: 100
+
+#Pick date format. Default is dd/mm/yyyy, fallse: mm/dd/yyyy
 day_first: true
 
-#The command to be run when reverting system
-#Later include commented versions of other package managers
-# update_command: "sudo pacman --needed -S - < "
+#update_command is the command to be run when reverting your system
+#PACMAN, default
+update_command: "sudo pacman --needed -S - < "
 
 #For aur support. Replace with yay if needed
-update_command: 'paru --needed -S - < '
-
-#TODO
-#Currently assumes that pacman is available for deleting obsolete pkgs
+#update_command: 'paru --needed -S - < '
 
 #Required for when the script is run as root by pacman hook
+#Otherwise permissions would be screwed
 uid: 1000
 gid: 1000
 
