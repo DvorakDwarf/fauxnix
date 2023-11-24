@@ -114,7 +114,6 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         print(f"Unable to find meta.json in G{target_gen}")
         exit()
 
-
     old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
     revert_command = config["update_command"] + old_pkg_path
     subprocess.run(revert_command, shell=True)
