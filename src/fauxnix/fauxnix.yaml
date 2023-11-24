@@ -1,10 +1,10 @@
 #Where the primary folder will be. Set at init. Default to .config
-storage: "STORAGE NOT SET WITH --init"
+storage: "STORAGE NOT SET WITH fauxnix --init"
 
 #If you use environment variables in paths, you need to set them here
 #It is necessary to let the root user use them
 env:
-  HOME: /home/titleless/
+  HOME: /home/YOURUSERHERE/
 
 #What config files will be copied each generation
 tracked_files:
@@ -13,7 +13,7 @@ tracked_files:
 #Only N most recent generations will be saved
 history_length: 100
 
-#Pick date format. Default is dd/mm/yyyy, fallse: mm/dd/yyyy
+#Pick date format. true is dd/mm/yyyy, false is mm/dd/yyyy
 day_first: true
 
 #update_command is the command to be run when reverting your system
@@ -38,8 +38,8 @@ gid: 1000
 
 
 
+#ABANDONED FUNCTIONALITY AHEAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-#ABANDONED FUNCTIONALITY
 #Use variables as follows in paths to files
 #tracked_files:
 #  - [*HOME, path/to/thing/from/home/folder]

@@ -119,10 +119,18 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
     revert_command = config["update_command"] + old_pkg_path
     subprocess.run(revert_command, shell=True)
 
-    #Makes this unique to pacman, find more general workaround later
-    subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
-    subprocess.run(f"sudo pacman -D --asexplicit $(<{old_pkg_path})", shell=True)
-    subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
+    print("Do you wish to delete packages not present in the generation ? (y/n)")
+    delete_orphans = input("If you press y, DOUBLE CHECK WHAT PACKAGES IT WILL DELETE\n").lower()
+    
+    if delete_orphans == 'y':
+        subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
+        #Should probably quit if pacman gives errors. This is spooky
+        subprocess.run(f"sudo pacman -D --asexplicit - < {old_pkg_path}", shell=True)
+        subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
+    elif delete_orphans == 'n':
+        pass
+    else:
+        print("Incorrect input. Not deleting the packages")
 
     for tracked_file in meta["og_paths"]:
         old_path = os.path.expandvars(meta["og_paths"][tracked_file])
