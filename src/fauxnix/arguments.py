@@ -6,8 +6,8 @@ import json
 import shutil
 from datetime import date, datetime
 
-import config_parser as config_parser
-import utils as utils
+import fauxnix.config_parser as config_parser
+import fauxnix.utils as utils
 
 const_yaml = ruamel.yaml.YAML()
 
