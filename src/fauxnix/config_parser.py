@@ -22,11 +22,13 @@ CONFIG_PATH = find_config()
 
 #Why have references if you can't concat them ????
 #Change return type to correct thing later
-def load_config(yaml: ruamel.yaml.YAML, forced_local: bool = False) -> dict:  
+def load_config(yaml: ruamel.yaml.YAML) -> dict:  
     active_config = CONFIG_PATH
 
-    if forced_local == True:
-        active_config = os.path.join(DIRNAME, "fauxnix.yaml")
+    #If user is root, find first available home user
+    #If you have multiple users using fauxnix, you are screwed
+    if os.getuid() == 0:
+        active_config = find_home()
 
     with open(active_config, 'r') as file:
         #Unsafe ???
@@ -36,12 +38,25 @@ def load_config(yaml: ruamel.yaml.YAML, forced_local: bool = False) -> dict:
 
     return config
 
-def dump_config(yaml: ruamel.yaml.YAML, config: dict, forced_local: bool = False):
+def dump_config(yaml: ruamel.yaml.YAML, config: dict):
     active_config = CONFIG_PATH
-
-    if forced_local == True:
-        active_config = os.path.join(DIRNAME, "fauxnix.yaml")
+    
+    #If user is root, find first available home user
+    #If you have multiple active users with fauxnix, you are screwed
+    if os.getuid() == 0:
+        active_config = find_home()
 
     with open(active_config, 'w') as file:
         yaml.dump(config, file)
 
+def find_home() -> str:
+    potential_homes = os.listdir("/home")
+
+    for home in potential_homes:
+        home = os.path.join("/home", home)
+        fauxnix_config = os.path.join(home, ".config/fauxnix/fauxnix.yaml")
+        if os.path.exists(fauxnix_config):
+            return fauxnix_config
+
+    print("Could not find config, defaulting")
+    return CONFIG_PATH

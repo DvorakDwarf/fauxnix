@@ -1,13 +1,13 @@
 import os
-import pwd
+# import pwd
 import subprocess
 import ruamel.yaml
 import json 
 import shutil
 from datetime import date, datetime
 
-import fauxnix.config_parser as config_parser
-import fauxnix.utils as utils
+import config_parser as config_parser
+import utils as utils
 
 const_yaml = ruamel.yaml.YAML()
 
@@ -185,22 +185,18 @@ def list(yaml: ruamel.yaml.YAML):
 def sync_pkglist(yaml: ruamel.yaml.YAML):
     subprocess.run(f"sudo pacman -Qqe > {PKGLIST_PATH}", shell=True)
 
-def initialize(yaml: ruamel.yaml.YAML, HOME: str):
+def initialize(yaml: ruamel.yaml.YAML):
     config = config_parser.load_config(yaml)
-
-    username = HOME.split('/')[-1]
+    
+    HOME = os.environ["HOME"]
 
     storage_dir = os.path.join(HOME, ".config")
     config["storage"] = storage_dir
-    #Local config must redirect to main config when run as root
-    local_config = config_parser.load_config(yaml, forced_local=True)
-    local_config["storage"] = storage_dir
 
-    config["uid"] = pwd.getpwnam(username).pw_uid
-    config["gid"] = pwd.getpwnam(username).pw_gid
+    config["uid"] = os.getuid()
+    config["gid"] = os.getgid()
 
-    home_dir = HOME
-    main_dir = os.path.join(home_dir, ".config/fauxnix")
+    main_dir = os.path.join(HOME, ".config/fauxnix")
     gen_dir = os.path.join(main_dir, "generations")
     pkglist_path = os.path.join(main_dir, "pkglist.txt")
     new_config_path = os.path.join(main_dir, "fauxnix.yaml")
@@ -230,5 +226,4 @@ def initialize(yaml: ruamel.yaml.YAML, HOME: str):
     print(f"Copied {old_config_path} to {new_config_path}")
 
     config_parser.dump_config(yaml, config)
-    config_parser.dump_config(yaml, local_config, forced_local=True)
 

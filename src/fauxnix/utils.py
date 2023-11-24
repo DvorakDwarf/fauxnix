@@ -1,7 +1,7 @@
 import os
 import ruamel.yaml
 
-import fauxnix.config_parser as config_parser
+import config_parser as config_parser
 
 def get_gen(dir: str) -> int:
     gen_section = dir.split("_")[0]

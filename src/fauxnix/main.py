@@ -4,8 +4,8 @@ import os
 import ruamel.yaml
 import argparse
 
-import fauxnix.arguments as arguments
-import fauxnix.config_parser as config_parser
+import arguments as arguments
+import config_parser as config_parser
 
 def main():
     yaml = ruamel.yaml.YAML()
@@ -26,7 +26,7 @@ def main():
                     help="list existing generations") 
     mxgroup.add_argument('-r', '--revert', type=int,
                         help="revert to previous generation. Takes generation #") 
-    mxgroup.add_argument('-in','--init', type=str,
+    mxgroup.add_argument('-in','--init', action='store_true',
                         help="Run this after installation as sudo fauxnix --init $HOME for stuff to work") 
     mxgroup.add_argument('-i', '--id', action='store_true',
                         help="place the user uid and gid in the config") 
@@ -67,8 +67,8 @@ def main():
     elif args.pkglist == True:
         arguments.sync_pkglist(yaml)
 
-    elif args.init != None:
-        arguments.initialize(yaml, args.init)
+    elif args.init == True:
+        arguments.initialize(yaml)
         print("Succesfully initialized. Modify ~/.config/fauxnix/fauxnix.yaml to add tracked files and change settings")
         print("Please uncomment whichever update_command you will use (paru/pacman/whatever)")
 
