@@ -16,6 +16,15 @@ history_length: 100
 #Pick date format. true is dd/mm/yyyy, false is mm/dd/yyyy
 day_first: true
 
+
+#While writing this I believe I found a bug in pacman. If you  
+#try to install from a text file containing invalid packages, such as
+#those from the AUR, pacman will not only give an error for each of them,
+#the expected behavior, but also forget to install any valid package.
+#Paru works fine and continues installing even it finds and invalid 
+#package, so if you have anything installed from outside official
+#repos, make sure to use paru or another AUR helper
+
 #update_command is the command to be run when reverting your system
 #PACMAN, default
 update_command: "sudo pacman --needed -S - < "
