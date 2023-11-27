@@ -17,13 +17,8 @@ history_length: 100
 day_first: true
 
 
-#While writing this I believe I found a bug in pacman. If you  
-#try to install from a text file containing invalid packages, such as
-#those from the AUR, pacman will not only give an error for each of them,
-#the expected behavior, but also forget to install any valid package.
-#Paru works fine and continues installing even it finds and invalid 
-#package, so if you have anything installed from outside official
-#repos, make sure to use paru or another AUR helper
+#If you have any installed AUR packages, you must use an AUR helper
+#The program will not just skip over AUR packages in that case, it will just stop working
 
 #update_command is the command to be run when reverting your system
 #PACMAN, default
