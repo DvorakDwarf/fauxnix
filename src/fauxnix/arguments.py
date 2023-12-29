@@ -114,26 +114,28 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         print(f"Unable to find meta.json in G{target_gen}")
         exit()
 
-    old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
-    if os.path.getsize(old_pkg_path) == 0:
-        print("The pkglist.txt is empty, something must have gone wrong. If the issue persists with new generations, report on github")
-        exit()
+    skip_choice = input("Do you wish to skip syncing packages ? (y/n)")
+    if skip_choice.lower() != "y":
+        old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
+        if os.path.getsize(old_pkg_path) == 0:
+            print("The pkglist.txt is empty, something must have gone wrong. If the issue persists with new generations, report on github")
+            exit()
 
-    revert_command = config["update_command"] + old_pkg_path
-    subprocess.run(revert_command, shell=True)
+        revert_command = config["update_command"] + old_pkg_path
+        subprocess.run(revert_command, shell=True)
 
-    print("Do you wish to delete packages not present in the generation ? (y/n)")
-    delete_orphans = input("If you press y, DOUBLE CHECK WHAT PACKAGES IT WILL DELETE\n").lower()
-    
-    if delete_orphans == 'y':
-        subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
-        #Should probably quit if pacman gives errors. This is spooky
-        subprocess.run(f"sudo pacman -D --asexplicit - < {old_pkg_path}", shell=True)
-        subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
-    elif delete_orphans == 'n':
-        pass
-    else:
-        print("Incorrect input. Not deleting the packages")
+        print("Do you wish to delete packages not present in the generation ? (y/n)")
+        delete_orphans = input("If you press y, DOUBLE CHECK WHAT PACKAGES IT WILL DELETE\n").lower()
+        
+        if delete_orphans == 'y':
+            subprocess.run("sudo pacman -D --asdeps $(pacman -Qqe)", shell=True)
+            #Should probably quit if pacman gives errors. This is spooky
+            subprocess.run(f"sudo pacman -D --asexplicit - < {old_pkg_path}", shell=True)
+            subprocess.run("sudo pacman -Qtdq | sudo pacman -Rns -", shell=True)
+        elif delete_orphans == 'n':
+            pass
+        else:
+            print("Incorrect input. Not deleting the packages")
 
     for tracked_file in meta["og_paths"]:
         old_path = os.path.expandvars(meta["og_paths"][tracked_file])
