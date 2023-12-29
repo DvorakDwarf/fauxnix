@@ -114,7 +114,7 @@ def revert(yaml: ruamel.yaml.YAML, target_gen: int):
         print(f"Unable to find meta.json in G{target_gen}")
         exit()
 
-    skip_choice = input("Do you wish to skip syncing packages ? (y/n)")
+    skip_choice = input("Do you wish to skip syncing packages ? (y/n) ")
     if skip_choice.lower() != "y":
         old_pkg_path = os.path.join(revert_dir, "pkglist.txt")
         if os.path.getsize(old_pkg_path) == 0:
